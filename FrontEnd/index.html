@@ -12,12 +12,11 @@
         /* Ajustes específicos para a Navbar */
         .navbar {
             transition: all 0.3s ease;
-            padding-top: 0.5rem !important;
-            padding-bottom: 0.5rem !important;
+            padding-top: 0.5rem !important; /* Mais fino */
+            padding-bottom: 0.5rem !important; /* Mais fino */
         }
 
-        /* Removi a lógica antiga de centralização para permitir 
-           que o Flexbox controle a posição (Carrinho Esq / Logo Dir) */
+        /* Removidas as classes de customização de posicionamento antigas que estavam em conflito */
     </style>
 </head>
 <body>
@@ -39,7 +38,7 @@
                 <i class="bi bi-cpu-fill"></i> Tech Center
             </a>
 
-            <button class="btn btn-primary rounded-pill px-3 py-2 d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#cartModal">
+            <button class="btn btn-primary rounded-pill px-3 py-2 d-flex align-items-center gap-2 position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
                 <i class="bi bi-bag-fill"></i> 
                 <span class="d-none d-sm-inline fw-bold">Carrinho</span>
                 <span class="cart-badge cart-count bg-danger badge rounded-pill position-absolute top-0 start-100 translate-middle" style="display:none">0</span>

@@ -23,13 +23,67 @@
         .price-section { background: #F8F9FA; border-radius: 16px; padding: 25px; margin-bottom: 30px; }
         .old-price { color: #adb5bd; text-decoration: line-through; font-size: 1rem; margin-bottom: 5px; }
         .current-price { color: #0066FF; font-size: 3rem; font-weight: 800; }
-        .btn-add-cart { background: #0066FF; color: white; border: none; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; width: 100%; margin-bottom: 15px; transition: all 0.3s; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3); }
-        .btn-add-cart:hover { background: #0052cc; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4); }
-        .btn-whatsapp { background: white; color: #1a1a1a; border: 2px solid #dee2e6; padding: 16px; border-radius: 12px; font-weight: 700; font-size: 1.05rem; width: 100%; transition: all 0.3s; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        
+        /* --- ESTILOS DOS BOTÕES (CENTRALIZADOS) --- */
+        .btn-add-cart { 
+            background: #0066FF; 
+            color: white; 
+            border: none; 
+            padding: 10px 24px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            
+            width: 100%; 
+            max-width: 320px;
+            
+            /* CENTRALIZAÇÃO MÁGICA AQUI: */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px auto; /* 0 topo, auto dir, 12px baixo, auto esq */
+            
+            transition: all 0.3s; 
+            box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3); 
+            gap: 8px;
+        }
+        
+        .btn-add-cart:hover:not(:disabled) { background: #0052cc; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 102, 255, 0.4); }
+        .btn-add-cart:disabled { background: #6c757d; cursor: not-allowed; box-shadow: none; transform: none; }
+        
+        .btn-whatsapp { 
+            background: white; 
+            color: #1a1a1a; 
+            border: 2px solid #dee2e6; 
+            padding: 10px 24px; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            font-size: 0.95rem; 
+            
+            width: 100%; 
+            max-width: 320px;
+            
+            /* CENTRALIZAÇÃO MÁGICA AQUI TAMBÉM: */
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 0 auto; /* auto nas laterais centraliza o bloco */
+            
+            transition: all 0.3s; 
+            text-decoration: none; 
+            gap: 10px; 
+        }
+        
         .btn-whatsapp:hover { border-color: #25D366; color: #25D366; background: #f0fdf4; }
+        
+        /* ------------------------------------------------ */
+
         .loading { display: flex; justify-content: center; align-items: center; min-height: 60vh; }
+        
         @media (max-width: 768px) { 
-            .product-info { padding-left: 0; margin-top: 30px; } 
+            /* Centraliza o texto no mobile para combinar com os botões centralizados */
+            .product-info { padding-left: 0; margin-top: 30px; text-align: center; } 
+            
             .product-title { font-size: 2rem; } 
             .current-price { font-size: 2.2rem; }
             .product-image-main { padding: 20px; min-height: 300px; }
@@ -39,7 +93,7 @@
             .product-section { padding: 30px 0; }
             .product-title { font-size: 1.5rem; }
             .current-price { font-size: 1.8rem; }
-            .btn-add-cart, .btn-whatsapp { padding: 12px; font-size: 0.95rem; }
+            .btn-add-cart, .btn-whatsapp { padding: 10px; font-size: 0.9rem; }
             .product-image-main { padding: 15px; min-height: 250px; }
         }
     </style>
@@ -151,7 +205,7 @@
 
                 if (error) throw error
 
-                // Preencher dados
+                // Preencher dados básicos
                 document.title = `${data.nome} | Tech Center`
                 document.getElementById('product-name').textContent = data.nome
                 document.getElementById('product-image').src = data.img || 'https://placehold.co/400x400/EEE/999?text=Sem+Imagem'
@@ -171,7 +225,7 @@
                     document.getElementById('old-price').textContent = `R$ ${data.preco_antigo.toFixed(2)}`
                 }
 
-                // Rating
+                // Rating (Estrelas)
                 const rating = data.reviews || 4.5
                 let stars = ''
                 for (let i = 0; i < 5; i++) {
@@ -185,16 +239,27 @@
                 }
                 document.getElementById('product-rating').innerHTML = stars + ` <span class="text-muted ms-2">(${rating.toFixed(1)})</span>`
 
-                // Botão adicionar
-                document.getElementById('btn-add-cart').onclick = () => {
-                    window.addToCart(data.nome, data.preco_novo)
+                // Lógica de Estoque
+                const btnAdd = document.getElementById('btn-add-cart')
+                const isEsgotado = data.esgotado || data.quantidade_estoque <= 0
+
+                if (isEsgotado) {
+                    btnAdd.innerHTML = '<i class="bi bi-x-circle"></i> Produto Esgotado'
+                    btnAdd.disabled = true
+                    btnAdd.onclick = null
+                    
+                    const whatsappText = `Olá! Tenho interesse no ${data.nome}, mas vi que está esgotado. Quando chega mais?`
+                    document.getElementById('whatsapp-link').href = `https://wa.me/5561996684007?text=${encodeURIComponent(whatsappText)}`
+                    document.getElementById('whatsapp-link').innerHTML = '<i class="bi bi-whatsapp"></i> Avise-me quando chegar'
+                } else {
+                    btnAdd.onclick = () => {
+                        window.addToCart(data.nome, data.preco_novo, data.img)
+                    }
+
+                    const whatsappText = `Olá! Gostaria de comprar: ${data.nome} - R$ ${data.preco_novo.toFixed(2)}`
+                    document.getElementById('whatsapp-link').href = `https://wa.me/5561996684007?text=${encodeURIComponent(whatsappText)}`
                 }
 
-                // WhatsApp
-                const whatsappText = `Olá! Gostaria de comprar: ${data.nome} - R$ ${data.preco_novo.toFixed(2)}`
-                document.getElementById('whatsapp-link').href = `https://wa.me/5561999999999?text=${encodeURIComponent(whatsappText)}`
-
-                // Mostrar conteúdo
                 document.getElementById('loading').style.display = 'none'
                 document.getElementById('product-content').style.display = 'block'
 

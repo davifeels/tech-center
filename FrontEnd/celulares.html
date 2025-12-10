@@ -26,11 +26,11 @@
             overflow-x: hidden;
         }
 
-        /* --- NAVBAR --- */
+        /* NAVBAR */
         .navbar {
             background: white;
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-            padding: 0.8rem 0;
+            padding: 1.2rem 0;
             position: sticky;
             top: 0;
             z-index: 1030;
@@ -46,57 +46,66 @@
             gap: 8px;
         }
 
-        /* INÍCIO DO AJUSTE DO BOTÃO CARRINHO */
+        /* BOTÃO CARRINHO - ESTILO PADRONIZADO */
         .btn-carrinho {
-            padding: 6px 16px; /* Ajuste o padding para não achatar */
-            border-radius: 50px; /* Bordas mais redondas (pill) */
+            padding: 10px 24px;
+            border-radius: 50px;
             background: var(--primary-color);
             color: white;
             border: none;
-            font-weight: 700; 
-            display: flex;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            font-size: 0.95rem; 
-            gap: 8px; 
+            font-size: 1rem;
+            gap: 8px;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 102, 255, 0.3); /* Sombra destacada */
+            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.25);
         }
-        
-        .btn-carrinho span.d-sm-inline {
-            display: none !important;
-        }
-        
-        @media (min-width: 576px) {
-             .btn-carrinho {
-                padding: 8px 20px;
-                font-size: 1rem;
-            }
-             .btn-carrinho span.d-sm-inline {
-                display: inline !important;
-            }
+
+        .btn-carrinho:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 102, 255, 0.35);
+            color: white;
         }
         
         .btn-carrinho i {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
-        /* FIM DO AJUSTE DO BOTÃO CARRINHO */
 
+        /* Badge do carrinho - estilo aprimorado */
         .cart-count {
             position: absolute;
-            top: -5px;
-            right: -5px;
+            top: -6px;
+            right: -6px;
             background: #ef4444;
             color: white;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            border: 2px solid white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
         }
 
-        /* --- BOTÃO VOLTAR INTELIGENTE --- */
+        /* Responsivo do texto "Carrinho" */
+        .btn-carrinho .cart-text {
+            display: none;
+        }
+
+        @media (min-width: 576px) {
+            .btn-carrinho .cart-text {
+                display: inline;
+            }
+        }
+
+        /* BOTÃO VOLTAR INTELIGENTE */
         .btn-voltar-smart {
             padding: 8px 20px;
             border-radius: 30px;
@@ -135,16 +144,15 @@
             }
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         .page-header {
             background: white;
-            padding: 5rem 0 2rem 0; 
+            padding: 3rem 0 1.5rem 0; 
             margin-bottom: 2rem;
             border-bottom: 1px solid #e2e8f0;
             text-align: center;
         }
 
-        /* INÍCIO DO AJUSTE DO PAGE-TITLE (RETÂNGULO) */
         .page-title {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 900;
@@ -153,24 +161,23 @@
             line-height: 1.2;
             margin-bottom: 0.5rem;
             display: inline-block;
-            padding: 0; /* Remove padding */
-            border-radius: 0; /* Remove border-radius */
-            background: transparent; /* Remove background */
-            border: none; /* Remove border */
-            box-shadow: none; /* Remove shadow */
+            padding: 0; 
+            border-radius: 0; 
+            background: transparent; 
+            border: none; 
+            box-shadow: none; 
             letter-spacing: -1px;
-            text-shadow: 0 4px 15px rgba(0, 102, 255, 0.2); /* Sombra sutil no texto */
+            text-shadow: 0 4px 15px rgba(0, 102, 255, 0.2);
         }
-        /* FIM DO AJUSTE DO PAGE-TITLE (RETÂNGULO) */
         
         .page-header p {
             color: #64748b;
             font-size: 1.1rem;
             font-weight: 500;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
-        /* --- INFO BAR (COM AJUSTE PARA BUSCA) --- */
+        /* INFO BAR */
         .info-bar {
             background: white;
             border-radius: 16px;
@@ -207,11 +214,7 @@
             outline: none;
         }
 
-        .info-bar .bi-tag-fill:before {
-            content: "\f207";
-        }
-
-        /* --- PRODUCT CARD --- */
+        /* PRODUCT CARD */
         .product-card {
             background: white;
             border-radius: 20px;
@@ -335,30 +338,24 @@
             color: #94a3b8;
         }
 
-        /* --- CORREÇÃO 2: CARD MENORES NO MOBILE --- */
+        /* AJUSTES MOBILE */
         @media (max-width: 576px) {
             .page-title { font-size: 2rem; }
             
-            /* Mudado de 100% para 50% para caber 2 por linha */
             .row > div[class*="col-"] { flex: 0 0 50%; max-width: 50%; }
             
-            /* Ajustes para o card não quebrar ao ficar menor */
             .product-card { padding: 0.8rem; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
             
-            /* Imagem menor */
             .product-img-wrapper { height: 140px; margin-bottom: 0.8rem; padding: 10px; }
             
             .product-brand { font-size: 0.7rem; }
             
-            /* Fonte do nome menor */
             .product-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
             
             .price-old { font-size: 0.75rem; }
             
-            /* Fonte do preço menor */
             .price-current { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
             
-            /* Botão de adicionar menor */
             .btn-bag { width: 32px; height: 32px; border-radius: 10px; font-size: 1rem; }
             
             .product-badge { top: 8px; left: 8px; font-size: 0.6rem; padding: 3px 8px; }
@@ -377,8 +374,9 @@
                 <i class="bi bi-cpu-fill text-primary"></i>
                 <span style="color: #1a1a1a;">Tech</span>Center
             </a>
-            <button class="btn-carrinho shadow-sm" data-bs-toggle="modal" data-bs-target="#cartModal">
-                <i class="bi bi-bag-fill"></i> <span class="d-none d-sm-inline">Carrinho</span>
+            <button class="btn-carrinho" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="bi bi-bag-fill"></i>
+                <span class="cart-text">Carrinho</span>
                 <span class="cart-count" style="display:none">0</span>
             </button>
         </div>
