@@ -1,0 +1,28 @@
+# Node modules (se usar futuramente)
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ambiente (se usar .env no futuro)
+.env
+.env.local
+
+# Build (se usar futuramente)
+dist/
+build/
+
+# Temporários
+*.tmp
+*.temp

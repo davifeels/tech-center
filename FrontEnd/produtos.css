@@ -1,0 +1,221 @@
+/* --- FrontEnd/css/produtos.css --- */
+
+/* ESTILOS DE CARD (CATÁLOGO GERAL / CATEGORIA) */
+.product-card, .product-card-pro {
+    transition: all 0.3s;
+    cursor: pointer;
+    overflow: hidden;
+    height: 100%;
+}
+
+.product-card:hover, .product-card-pro:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* 1. Container de Imagem Compacto */
+.product-img-wrapper, .pro-img-wrapper {
+    height: 160px; 
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    padding: 10px;
+}
+
+.product-img-wrapper img, .pro-img-wrapper img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* 2. Título e Preço Compactos */
+.product-card h5, .pro-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.product-card .text-primary, .pro-price-new {
+    font-size: 1.1rem; 
+    font-weight: 800;
+}
+
+/* 3. Botão de Sacola Compacto */
+.btn-bag {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50%;
+    /* Estilo para Branco/Primário */
+    background: white !important; 
+    color: var(--primary-color) !important;
+    border: 2px solid var(--primary-color) !important;
+    transition: all 0.3s;
+}
+.btn-bag:hover {
+    background: var(--primary-color) !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+
+/* 4. Badge no Catálogo Compacto */
+.pro-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 5;
+    /* Estilo Branco/Primário */
+    background: white; 
+    border: 1px solid var(--primary-color); 
+    color: var(--primary-color);
+}
+
+/* --- ESTILOS DA PÁGINA DE DETALHES (produto.html) --- */
+
+.product-wrapper {
+    position: relative;
+}
+
+/* 5. Botão Voltar no canto superior esquerdo */
+.back-btn { 
+    position: absolute; 
+    top: 20px; 
+    left: 20px; 
+    text-decoration: none; 
+    color: #475569; 
+    font-weight: 600; 
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    z-index: 10;
+}
+
+/* =========================================================================
+   RESPONSIVIDADE MOBILE - CORRIGIDO
+   ========================================================================= */
+
+@media (max-width: 768px) {
+    
+    /* Imagens menores em mobile */
+    .product-img-wrapper, .pro-img-wrapper {
+        height: 140px;
+        padding: 8px;
+    }
+
+    /* Títulos menores */
+    .product-card h5, .pro-title {
+        font-size: 0.875rem;
+        line-height: 1.3;
+    }
+
+    /* Preços menores */
+    .product-card .text-primary, .pro-price-new {
+        font-size: 1rem;
+    }
+
+    /* Botão sacola menor */
+    .btn-bag {
+        width: 36px !important;
+        height: 36px !important;
+    }
+
+    /* Card padding reduzido */
+    .product-card, .product-card-pro {
+        padding: 1rem;
+    }
+
+    /* Badge menor */
+    .pro-badge {
+        padding: 2px 6px;
+        font-size: 0.6rem;
+        top: 8px;
+        left: 8px;
+    }
+}
+
+@media (max-width: 576px) {
+    
+    /* Imagens ainda menores */
+    .product-img-wrapper, .pro-img-wrapper {
+        height: 120px;
+        padding: 6px;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Títulos compactos */
+    .product-card h5, .pro-title {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Preços compactos */
+    .product-card .text-primary, .pro-price-new {
+        font-size: 0.95rem;
+    }
+
+    /* Botão muito pequeno */
+    .btn-bag {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 0.9rem;
+    }
+
+    /* Card super compacto */
+    .product-card, .product-card-pro {
+        padding: 0.75rem;
+        border-radius: 12px;
+    }
+
+    /* Badge muito pequeno */
+    .pro-badge {
+        padding: 2px 5px;
+        font-size: 0.55rem;
+    }
+
+    /* Brand menor */
+    .pro-brand {
+        font-size: 0.65rem;
+    }
+}
+
+@media (max-width: 480px) {
+    
+    /* Imagens mínimas */
+    .product-img-wrapper, .pro-img-wrapper {
+        height: 110px;
+        padding: 5px;
+    }
+
+    /* Títulos mínimos */
+    .product-card h5, .pro-title {
+        font-size: 0.8rem;
+    }
+
+    /* Preços mínimos */
+    .product-card .text-primary, .pro-price-new {
+        font-size: 0.9rem;
+    }
+
+    /* Botão mínimo */
+    .btn-bag {
+        width: 30px !important;
+        height: 30px !important;
+        font-size: 0.85rem;
+    }
+
+    /* Card mínimo */
+    .product-card, .product-card-pro {
+        padding: 0.625rem;
+    }
+}

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Center | A Maior Loja de Tecnologia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="bg-primary text-white py-2 fw-bold text-center small">
+        <div class="container d-flex justify-content-between">
+            <span class="d-none d-md-block"><i class="bi bi-geo-alt-fill me-1"></i> Enviamos para todo Brasil</span>
+            <div class="ms-auto d-flex gap-3">
+                <span><i class="bi bi-truck me-1"></i> Frete Grátis > R$ 499</span>
+                <span><i class="bi bi-shield-check me-1"></i> Garantia 1 Ano</span>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3 text-primary" href="index.html">
+                <i class="bi bi-cpu-fill"></i> Tech Center
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center gap-3">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Início</a></li>
+                    <li class="nav-item"><a class="nav-link" href="celulares.html">Produtos</a></li>
+                    <li class="nav-item">
+                        <button class="btn btn-primary rounded-pill px-4 position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+                            <i class="bi bi-bag-fill me-2"></i> Carrinho
+                            <span class="cart-badge cart-count bg-danger badge rounded-pill position-absolute top-0 start-100 translate-middle" style="display:none">0</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section class="container my-4">
+        <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000"> 
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3"></button>
+                <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4"></button>
+            </div>
+            <div class="carousel-inner rounded-4 shadow-sm overflow-hidden">
+                <div class="carousel-item active">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&q=80" class="d-block w-100" alt="Tech">
+                    <div class="hero-caption">
+                        <div class="hero-content">
+                            <h1 class="hero-title">O Futuro <br>Chegou.</h1>
+                            <p class="text-white fs-5 mb-4">Descubra as últimas inovações em tecnologia.</p>
+                            <a href="celulares.html" class="btn btn-light btn-lg rounded-pill px-5 fw-bold">Ver Lançamentos</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1920&q=80" class="d-block w-100" alt="Gamer">
+                    <div class="hero-caption">
+                        <div class="hero-content">
+                            <h1 class="hero-title">Setup Pro <br>Gamer.</h1>
+                            <p class="text-white fs-5 mb-4">Performance máxima para seus jogos.</p>
+                            <a href="celulares.html?cat=gamer" class="btn btn-light btn-lg rounded-pill px-5 fw-bold">Montar Setup</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=1920&q=80" class="d-block w-100" alt="Mobile">
+                    <div class="hero-caption">
+                        <div class="hero-content">
+                            <h1 class="hero-title">Smartphones <br>Premium.</h1>
+                            <p class="text-white fs-5 mb-4">As melhores câmeras e processadores.</p>
+                            <a href="celulares.html" class="btn btn-light btn-lg rounded-pill px-5 fw-bold">Escolher Celular</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1920&q=80" class="d-block w-100" alt="Audio">
+                    <div class="hero-caption">
+                        <div class="hero-content">
+                            <h1 class="hero-title">Som de <br>Cinema.</h1>
+                            <p class="text-white fs-5 mb-4">Headphones com cancelamento de ruído.</p>
+                            <a href="celulares.html" class="btn btn-light btn-lg rounded-pill px-5 fw-bold">Ouvir Agora</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80" class="d-block w-100" alt="Smart Home">
+                    <div class="hero-caption">
+                        <div class="hero-content">
+                            <h1 class="hero-title">Casa <br>Inteligente.</h1>
+                            <p class="text-white fs-5 mb-4">Automatize tudo com um toque.</p>
+                            <a href="celulares.html" class="btn btn-light btn-lg rounded-pill px-5 fw-bold">Ver Automação</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+    </section>
+
+    <section id="stats-section" class="container my-5">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4 border rounded-4 bg-light">
+                    <div class="stat-number counter display-4 fw-bold text-primary" data-target="5000">0</div>
+                    <div class="text-muted fw-bold">Clientes Felizes</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4 border rounded-4 bg-light">
+                    <div class="stat-number counter display-4 fw-bold text-primary" data-target="365">0</div>
+                    <div class="text-muted fw-bold">Dias de Garantia</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4 border rounded-4 bg-light">
+                    <div class="stat-number counter display-4 fw-bold text-primary" data-target="24">0</div>
+                    <div class="text-muted fw-bold">Horas Entrega</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card text-center p-4 border rounded-4 bg-light">
+                    <div class="stat-number counter display-4 fw-bold text-primary" data-target="100">0</div>
+                    <div class="text-muted fw-bold">% Seguro</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Navegue por Categoria</h2>
+            <p class="text-muted">Encontre o que você procura</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="celulares.html" class="text-decoration-none">
+                    <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80');">
+                        <div class="cat-overlay">
+                            <h4>Smartphones</h4>
+                            <p>iPhone, Samsung, Xiaomi</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="celulares.html" class="text-decoration-none">
+                    <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1579586337278-3befd40fd17a?auto=format&fit=crop&w=800&q=80');">
+                        <div class="cat-overlay">
+                            <h4>Smartwatch</h4>
+                            <p>Apple Watch, Galaxy Watch</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="celulares.html" class="text-decoration-none">
+                    <div class="cat-card" style="background-image: url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=800&q=80');">
+                        <div class="cat-overlay">
+                            <h4>Smart Home</h4>
+                            <p>Alexa, Google Home</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="container my-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Coleções Especiais</h2>
+            <p class="text-muted">Seleções exclusivas criadas por nosso time</p>
+        </div>
+        <div class="row g-4" id="dynamic-sections-container">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2 text-muted">Carregando coleções...</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container my-5 py-5 border-top">
+        <div class="row align-items-center">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <img src="https://images.unsplash.com/photo-1556656793-08538906a9f8?w=800&q=80" alt="Suporte Técnico" class="guarantee-img w-100 rounded-4 shadow-sm">
+            </div>
+            <div class="col-md-6 ps-md-5">
+                <h2 class="display-6 fw-bold mb-4">Garantia de 1 Ano</h2>
+                <p class="fs-5 text-muted mb-4">Todos os nossos produtos possuem garantia estendida de 1 ano. Sua tranquilidade é nossa prioridade absoluta.</p>
+                
+                <div class="d-flex gap-3 mb-4">
+                    <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                    <div>
+                        <h5 class="mb-1 fw-bold">Suporte Técnico Gratuito</h5>
+                        <p class="text-muted mb-0">Nossa equipe especialista está sempre disponível para te ajudar.</p>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-3 mb-4">
+                    <i class="bi bi-arrow-repeat text-primary fs-3"></i>
+                    <div>
+                        <h5 class="mb-1 fw-bold">Troca Facilitada</h5>
+                        <p class="text-muted mb-0">Deu problema? Trocamos sem burocracia e sem dor de cabeça.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-light py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">O que dizem nossos clientes</h2>
+                <p class="text-muted">Experiências reais de quem comprou na Tech Center</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="testimonial-card bg-white p-4 rounded-4 shadow-sm h-100">
+                        <div class="mb-3 text-warning">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4 text-muted">"O atendimento foi sensacional! Comprei meu iPhone e chegou no dia seguinte. Produto original e lacrado. Recomendo demais!"</p>
+                        <div class="d-flex align-items-center gap-3 mt-auto">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">R</div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Ricardo Silva</h6>
+                                <small class="text-muted">Brasília, DF</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card bg-white p-4 rounded-4 shadow-sm h-100">
+                        <div class="mb-3 text-warning">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                        </div>
+                        <p class="mb-4 text-muted">"A melhor loja de tecnologia que já comprei. O site é lindo, fácil de usar e o suporte no WhatsApp me ajudou a escolher o fone ideal."</p>
+                        <div class="d-flex align-items-center gap-3 mt-auto">
+                            <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">A</div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Amanda Costa</h6>
+                                <small class="text-muted">São Paulo, SP</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="testimonial-card bg-white p-4 rounded-4 shadow-sm h-100">
+                        <div class="mb-3 text-warning">
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+                        </div>
+                        <p class="mb-4 text-muted">"Preço justo e entrega muito rápida. Gostei muito da garantia de 1 ano, me passa muita segurança para comprar produtos caros."</p>
+                        <div class="d-flex align-items-center gap-3 mt-auto">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 40px; height: 40px;">F</div>
+                            <div>
+                                <h6 class="mb-0 fw-bold">Felipe Santos</h6>
+                                <small class="text-muted">Goiânia, GO</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark text-white-50 py-5 mt-auto">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h3 class="text-white">Tech Center</h3>
+                    <p>Sua loja de confiança para produtos Apple, Xiaomi e muito mais.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h3 class="text-white">Contato</h3>
+                    <p><i class="bi bi-whatsapp"></i> (61) 99668-4007</p>
+                    <p><i class="bi bi-envelope"></i> techcenterimports@gmail.com</p>
+                </div>
+                <div class="col-md-4">
+                    <h3 class="text-white">Links</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li><a href="celulares.html" class="text-white-50 text-decoration-none">Produtos</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center small">
+                &copy; 2025 Tech Center. Todos os direitos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold">Seu Carrinho</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body bg-light" id="cart-items"></div>
+                <div class="modal-footer border-0">
+                    <div class="w-100 d-flex justify-content-between align-items-center">
+                        <span class="h5 mb-0 fw-bold text-primary" id="cart-total">R$ 0,00</span>
+                        <button class="btn btn-success rounded-pill px-4" onclick="checkout()">
+                            <i class="bi bi-whatsapp me-2"></i> Finalizar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="module" src="js/app.js"></script>
+
+</body>
+</html>

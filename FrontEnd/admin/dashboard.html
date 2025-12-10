@@ -1,0 +1,3282 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin | Tech Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #e0e7ff;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --dark: #1e293b;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #cbd5e1;
+            --gray-600: #475569;
+            --gray-700: #334155;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-50);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 2rem 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-xl);
+            overflow-y: auto;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-logo {
+            text-align: center;
+            padding: 0 2rem 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo i {
+            font-size: 3rem;
+            color: white;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .sidebar-logo h3 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .sidebar-logo p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0 1rem;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.875rem 1.25rem;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+            font-size: 0.9375rem;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .sidebar-menu a.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sidebar-menu i {
+            font-size: 1.25rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .btn-logout {
+            position: absolute;
+            bottom: 2rem;
+            left: 1rem;
+            right: 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            color: white;
+            padding: 0.875rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            border-color: var(--danger);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        /* ===== MAIN CONTENT - CORRIGIDO PARA NÃO DESCER O CONTEÚDO ===== */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+            background: var(--gray-50);
+            transition: margin-left 0.3s;
+            /* Removido padding-top gigante, pois a barra não é mais fixa */
+            padding-top: 0; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== TOP BAR - AGORA SOBE JUNTO COM A TELA ===== */
+        .top-bar {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* MUDANÇA CRUCIAL: relative para não seguir a rolagem */
+            position: relative; 
+            width: 100%;
+            z-index: 99;
+        }
+        
+        .menu-toggle {
+            display: none; 
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem; 
+        }
+
+        .top-bar-left h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin: 0 0 0.25rem 0;
+        }
+
+        .top-bar-left p {
+            color: var(--gray-600);
+            margin: 0;
+            font-size: 0.9375rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-details {
+            text-align: right;
+        }
+
+        .user-details p {
+            margin: 0;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.9375rem;
+        }
+
+        .user-details small {
+            color: var(--gray-600);
+            font-size: 0.8125rem;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.125rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            padding: 2rem;
+            flex: 1;
+        }
+
+        .section-content {
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* ===== SECTIONS ===== */
+        #section-cards {
+            background: var(--gray-50);
+            z-index: 50;
+            overflow-y: auto;
+            padding: 2rem;
+            margin-top: 0;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        /* Botão Principal - Adicionar Produto/Card - CORRIGIDO PARA NÃO FICAR FEIO */
+        .btn-add {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.25rem; 
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem; 
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            white-space: nowrap; /* IMPEDE QUEBRA DE LINHA FEIA */
+        }
+
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.75rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .stat-card-content {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .stat-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+        .stat-icon.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0 0 0.25rem 0;
+            color: var(--dark);
+        }
+
+        .stat-info p {
+            margin: 0;
+            color: var(--gray-600);
+            font-size: 0.9375rem;
+            font-weight: 500;
+        }
+
+        /* ===== TABLE ===== */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .data-table thead th {
+            background: var(--gray-50);
+            padding: 1rem;
+            font-weight: 700;
+            color: var(--dark);
+            border-bottom: 2px solid var(--gray-200);
+            text-align: left;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .data-table tbody td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--gray-200);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr {
+            transition: all 0.2s;
+        }
+
+        .data-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .badge {
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge.success { background: #d1fae5; color: #065f46; }
+        .badge.warning { background: #fef3c7; color: #92400e; }
+        .badge.danger { background: #fee2e2; color: #991b1b; }
+        .badge.info { background: #dbeafe; color: #1e40af; }
+
+        /* ===== ACTION BUTTONS ===== */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-icon.edit { background: #dbeafe; color: #1e40af; }
+        .btn-icon.edit:hover { background: #1e40af; color: white; }
+        .btn-icon.delete { background: #fee2e2; color: #991b1b; }
+        .btn-icon.delete:hover { background: #991b1b; color: white; }
+        .btn-icon.view { background: #d1fae5; color: #065f46; }
+        .btn-icon.view:hover { background: #065f46; color: white; }
+
+        /* ===== SEARCH BAR ===== */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--gray-50);
+            padding: 0.875rem 1.25rem;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            margin-bottom: 1.5rem;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 0.9375rem;
+            color: var(--dark);
+            outline: none;
+        }
+
+        .search-bar i {
+            color: var(--gray-600);
+            font-size: 1.125rem;
+        }
+
+        /* ===== FILTERS ===== */
+        .filters {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.625rem 1.25rem;
+            border: 2px solid var(--gray-200);
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ===== PRODUTO CARD - ESTILOS BASE ===== */
+        .produto-card {
+            background: white !important;
+            border: 2px solid var(--gray-200) !important;
+            border-radius: 8px !important;
+            padding: 0.5rem !important; 
+            display: flex !important;
+            gap: 1rem !important;
+            align-items: center !important;
+            transition: all 0.3s !important;
+            margin-bottom: 0.75rem !important; 
+            min-height: auto !important;
+            height: auto !important;
+        }
+
+        .produto-card * {
+            box-sizing: border-box !important;
+        }
+
+        .produto-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .produto-img {
+            width: 80px !important; 
+            height: 80px !important; 
+            min-width: 80px !important; 
+            border-radius: 4px;
+            background: var(--gray-50);
+            padding: 2px;
+            border: 2px solid var(--gray-200);
+            flex-shrink: 0;
+        }
+
+        .produto-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .produto-info {
+            flex: 1;
+            padding: 0 0.5rem;
+        }
+
+        .produto-info h4 {
+            margin: 0 0 0.1rem 0 !important;
+            font-size: 1rem !important; 
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+
+        .produto-meta {
+            display: flex;
+            gap: 0.75rem; 
+            margin-bottom: 0.1rem;
+            font-size: 0.75rem !important; 
+            color: var(--gray-600);
+        }
+
+        .produto-preco {
+            font-size: 1.25rem !important; 
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.2rem 0;
+        }
+
+        .produto-status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .produto-status.disponivel { background: #d1fae5; color: #065f46; }
+        .produto-status.esgotado { background: #fee2e2; color: #991b1b; }
+
+        /* ===== ACTION BUTTONS (Produtos) ===== */
+        .produto-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 120px; 
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            padding: 0.5rem 1rem; 
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.875rem; 
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-editar { background: #dbeafe; color: #1e40af; }
+        .btn-editar:hover { background: #1e40af; color: white; }
+        .btn-toggle { background: #fef3c7; color: #92400e; }
+        .btn-toggle:hover { background: #92400e; color: white; }
+        .btn-excluir { background: #fee2e2; color: #991b1b; }
+        .btn-excluir:hover { background: #991b1b; color: white; }
+        
+        .badge-produto {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        
+        .badge-azul { background: var(--primary); color: white; }
+        .badge-amarelo { background: var(--warning); color: #000; }
+        .badge-vermelho { background: var(--danger); color: white; }
+
+        /* ===== CARDS DA HOME ===== */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            border: 1px solid var(--gray-200);
+            border-radius: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+        
+        .card:hover {
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+        
+        .card-img-preview {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            background: #f1f5f9;
+        }
+        
+        .card-img-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-produto {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal-produto.show { display: block; }
+
+        .modal-content-custom {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-xl);
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .modal-header-custom {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            padding: 2rem;
+            border-radius: 24px 24px 0 0;
+            color: white;
+        }
+
+        .modal-header-custom h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-header-custom p {
+            margin: 0.5rem 0 0 0;
+            opacity: 0.9;
+            font-size: 0.9375rem;
+        }
+
+        .modal-body-custom { padding: 2.5rem; }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 2.5rem 0 1.5rem 0;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .section-divider i {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        .section-divider h3 {
+            margin: 0;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .form-group-premium { margin-bottom: 1.5rem; }
+
+        .form-label-premium {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.625rem;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--dark);
+        }
+
+        .form-label-premium i { color: var(--primary); }
+        .required { color: var(--danger); }
+
+        .form-control-premium {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            transition: all 0.3s;
+        }
+
+        .form-control-premium:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-light);
+        }
+
+        .form-help-text {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--gray-600);
+        }
+
+        .input-group-premium { display: flex; }
+
+        .input-group-text-premium {
+            background: var(--gray-100);
+            border: 2px solid var(--gray-200);
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            padding: 0.875rem 1rem;
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .input-group-premium .form-control-premium { border-radius: 0 12px 12px 0; }
+
+        .file-upload-area {
+            border: 2px dashed var(--gray-200);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--gray-50);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .divider-or {
+            display: flex;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .divider-or::before, .divider-or::after {
+            content: '';
+            flex: 1;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .divider-or span {
+            padding: 0 1rem;
+            color: var(--gray-600);
+            font-weight: 600;
+        }
+
+        .modal-footer-custom {
+            padding: 1.5rem 2.5rem;
+            background: var(--gray-50);
+            border-radius: 0 0 24px 24px;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        .btn-secondary-custom {
+            padding: 0.875rem 2rem;
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            color: var(--dark);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary-custom:hover { background: var(--gray-100); }
+
+        .btn-primary-custom {
+            padding: 0.875rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* ===== CONFIRM MODAL ===== */
+        .modal-confirm-custom .modal-content {
+            border-radius: 20px;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-confirm-custom .modal-header {
+            border-bottom: none;
+            padding: 2rem 2rem 0;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .modal-confirm-custom .modal-body {
+            text-align: center;
+            padding: 0 2rem 2rem;
+        }
+        
+        .modal-confirm-custom .modal-footer {
+            border-top: none;
+            padding: 0 2rem 2rem;
+            gap: 1rem;
+            justify-content: center;
+        }
+        
+        .confirm-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .confirm-icon-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .confirm-icon-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .confirm-icon-info { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); }
+        
+        .modal-confirm-custom h5 {
+            font-weight: 700;
+            color: var(--dark);
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .modal-confirm-custom p {
+            color: var(--gray-600);
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        .btn-confirm-cancel {
+            background: var(--gray-100);
+            color: var(--dark);
+            font-weight: 600;
+            border: 2px solid var(--gray-200);
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.2s;
+        }
+        
+        .btn-confirm-cancel:hover { background: var(--gray-200); }
+        
+        .btn-confirm-action {
+            font-weight: 600;
+            padding: 0.6rem 1.5rem;
+            border-radius: 10px;
+            transition: all 0.2s;
+            color: white;
+        }
+        
+        .btn-confirm-action.btn-danger-action { background: var(--danger); border: none; }
+        .btn-confirm-action.btn-warning-action { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border: none; }
+        .btn-confirm-action.btn-primary-action { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); border: none; }
+        
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 2000; 
+        }
+        
+        .toast-custom {
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: var(--shadow-lg);
+            border: none;
+            min-width: 300px;
+            background: var(--white);
+        }
+        
+        .toast-custom.success { border-left: 5px solid var(--success); }
+        .toast-custom.danger { border-left: 5px solid var(--danger); }
+        .toast-custom.warning { border-left: 5px solid var(--warning); }
+
+        .toast-custom .toast-header {
+            padding: 0;
+            background: none;
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .toast-custom .toast-body {
+            padding: 0;
+            padding-top: 0.5rem;
+            color: var(--gray-600);
+        }
+        
+        .toast-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .icon-success { color: var(--success); }
+        .icon-danger { color: var(--danger); }
+        .icon-warning { color: var(--warning); }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-100);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* =========================================================================
+        /* =========================================================================
+           RESPONSIVIDADE E CORREÇÕES FINAIS (MOBILE) - MELHORADA
+           ========================================================================= */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show { 
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 0;
+            }
+            
+            .top-bar {
+                left: 0 !important;
+                width: 100% !important;
+                padding: 1rem;
+            }
+            
+            .menu-toggle {
+                display: block; 
+            }
+            
+            .user-details {
+                display: none;
+            }
+
+            .content-area {
+                padding: 1.5rem;
+            }
+            
+            .cards-grid {
+                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+            
+            #listaCards .card {
+                max-width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+                gap: 1.25rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            
+            .content-area {
+                padding: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .section-header h2 {
+                 font-size: 1.3rem;
+            }
+            
+            .btn-add {
+                padding: 0.55rem 1rem;
+                font-size: 0.85rem;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .produto-card {
+                padding: 0.75rem !important; 
+                gap: 0.75rem !important;
+                flex-wrap: wrap; 
+                align-items: flex-start !important;
+                height: auto !important;
+            }
+
+            .produto-img {
+                width: 70px !important;
+                height: 70px !important;
+                min-width: 70px !important;
+                order: 1;
+            }
+
+            .produto-info {
+                flex: 1 1 50%;
+                order: 2;
+                padding: 0;
+                min-width: 150px;
+            }
+            
+            .produto-info h4 {
+                font-size: 0.95rem !important;
+                margin-bottom: 0.25rem !important;
+            }
+
+            .produto-meta {
+                flex-direction: column;
+                gap: 0.2rem;
+                font-size: 0.75rem !important;
+            }
+
+            .produto-preco {
+                font-size: 1.1rem !important;
+                margin-top: 0.25rem;
+            }
+            
+            .produto-status {
+                display: inline-block;
+                margin-top: 0.5rem;
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+                order: 3;
+                width: 100%;
+                text-align: center;
+            }
+
+            .produto-actions {
+                flex: 1 1 100%; 
+                flex-direction: row !important;
+                gap: 0.5rem !important;
+                order: 4;
+                margin-top: 0.5rem;
+            }
+            
+            .btn-action {
+                flex: 1;
+                padding: 0.5rem !important;
+                font-size: 0.8rem !important;
+                justify-content: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.25rem;
+            }
+
+            .stat-icon {
+                width: 56px;
+                height: 56px;
+                font-size: 1.5rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .card-home-item {
+                max-width: 100%;
+            }
+
+            .card-home-item img {
+                max-height: 200px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            
+            .content-area {
+                padding: 0.875rem;
+            }
+
+            .top-bar {
+                padding: 0.875rem;
+            }
+
+            .top-bar-left h1 {
+                font-size: 1.25rem;
+            }
+
+            .top-bar-left p {
+                font-size: 0.8rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.15rem;
+            }
+
+            .btn-add {
+                padding: 0.5rem 0.875rem;
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.875rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 52px;
+                height: 52px;
+                font-size: 1.375rem;
+            }
+
+            .stat-info h3 {
+                font-size: 1.75rem;
+            }
+
+            .stat-info p {
+                font-size: 0.875rem;
+            }
+
+            .produto-card {
+                padding: 0.625rem !important;
+                gap: 0.625rem !important;
+            }
+
+            .produto-img {
+                width: 65px !important;
+                height: 65px !important;
+                min-width: 65px !important;
+            }
+
+            .produto-info h4 {
+                font-size: 0.9rem !important;
+            }
+
+            .produto-preco {
+                font-size: 1rem !important;
+            }
+
+            .btn-action {
+                padding: 0.45rem !important;
+                font-size: 0.75rem !important;
+            }
+
+            .table-responsive {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .data-table {
+                font-size: 0.8rem;
+            }
+
+            .data-table thead th,
+            .data-table tbody td {
+                padding: 0.625rem 0.5rem;
+                white-space: nowrap;
+            }
+
+            .card-home-item {
+                border-radius: 10px;
+            }
+
+            .card-home-item img {
+                max-height: 180px;
+                border-radius: 8px 8px 0 0;
+            }
+
+            .search-bar {
+                padding: 0.75rem 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .search-bar input {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            
+            body {
+                font-size: 14px;
+            }
+
+            .content-area {
+                padding: 0.75rem;
+            }
+
+            .top-bar {
+                padding: 0.75rem;
+            }
+
+            .top-bar-left h1 {
+                font-size: 1.125rem;
+            }
+
+            .top-bar-left p {
+                font-size: 0.75rem;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 1.25rem;
+                border-radius: 12px;
+            }
+
+            .section-header {
+                margin-bottom: 1rem;
+                padding-bottom: 0.875rem;
+            }
+
+            .section-header h2 {
+                font-size: 1.05rem;
+            }
+
+            .btn-add {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .btn-add i {
+                font-size: 0.875rem;
+            }
+
+            .stats-grid {
+                gap: 0.75rem;
+            }
+
+            .stat-card {
+                padding: 0.875rem;
+            }
+
+            .stat-card-content {
+                gap: 0.875rem;
+            }
+
+            .stat-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.25rem;
+                border-radius: 10px;
+            }
+
+            .stat-info h3 {
+                font-size: 1.5rem;
+            }
+
+            .stat-info p {
+                font-size: 0.8rem;
+            }
+
+            .produto-card {
+                padding: 0.5rem !important;
+                gap: 0.5rem !important;
+                border-radius: 6px !important;
+            }
+
+            .produto-img {
+                width: 60px !important;
+                height: 60px !important;
+                min-width: 60px !important;
+                border-radius: 4px;
+            }
+
+            .produto-info {
+                min-width: 120px;
+            }
+
+            .produto-info h4 {
+                font-size: 0.85rem !important;
+                line-height: 1.3;
+            }
+
+            .produto-meta {
+                font-size: 0.7rem !important;
+            }
+
+            .produto-preco {
+                font-size: 0.95rem !important;
+            }
+
+            .produto-status {
+                font-size: 0.65rem;
+                padding: 0.25rem 0.5rem;
+            }
+
+            .produto-actions {
+                gap: 0.375rem !important;
+                margin-top: 0.375rem;
+            }
+
+            .btn-action {
+                padding: 0.4rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 6px;
+            }
+
+            .btn-action i {
+                font-size: 0.8rem;
+            }
+
+            .cards-grid {
+                gap: 0.75rem;
+            }
+
+            .card-home-item {
+                border-radius: 8px;
+            }
+
+            .card-home-item img {
+                max-height: 160px;
+                border-radius: 6px 6px 0 0;
+            }
+
+            .card-home-content {
+                padding: 0.875rem;
+            }
+
+            .card-home-content h4 {
+                font-size: 0.95rem;
+            }
+
+            .card-home-content p {
+                font-size: 0.8rem;
+            }
+
+            .search-bar {
+                padding: 0.625rem 0.875rem;
+                border-radius: 8px;
+            }
+
+            .search-bar input {
+                font-size: 0.8125rem;
+            }
+
+            .search-bar i {
+                font-size: 1rem;
+            }
+
+            .data-table {
+                font-size: 0.75rem;
+            }
+
+            .data-table thead th,
+            .data-table tbody td {
+                padding: 0.5rem 0.375rem;
+            }
+
+            .badge {
+                padding: 0.25rem 0.5rem;
+                font-size: 0.7rem;
+            }
+
+            .action-buttons {
+                gap: 0.375rem;
+            }
+
+            .btn-icon {
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+            }
+
+            .btn-icon i {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            
+            .content-area {
+                padding: 0.625rem;
+            }
+
+            .top-bar {
+                padding: 0.625rem;
+            }
+
+            .top-bar-left h1 {
+                font-size: 1rem;
+            }
+
+            .section {
+                padding: 1rem;
+            }
+
+            .section-header h2 {
+                font-size: 0.95rem;
+            }
+
+            .btn-add {
+                padding: 0.45rem 0.625rem;
+                font-size: 0.7rem;
+            }
+
+            .stat-card {
+                padding: 0.75rem;
+            }
+
+            .stat-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 1.125rem;
+            }
+
+            .stat-info h3 {
+                font-size: 1.375rem;
+            }
+
+            .produto-img {
+                width: 55px !important;
+                height: 55px !important;
+                min-width: 55px !important;
+            }
+
+            .produto-info h4 {
+                font-size: 0.8rem !important;
+            }
+
+            .produto-preco {
+                font-size: 0.9rem !important;
+            }
+
+            .btn-action {
+                padding: 0.35rem !important;
+                font-size: 0.65rem !important;
+            }
+
+            .card-home-item img {
+                max-height: 140px;
+            }
+        }
+
+        /* =========================================================================
+           FORÇAR BOTÕES MENORES EM MOBILE - SUPER AGRESSIVO
+           ========================================================================= */
+        
+        /* TODOS OS DISPOSITIVOS MOBILE - 768px e menores */
+        @media (max-width: 768px) {
+            
+            /* BOTÃO PRINCIPAL - ADICIONAR/CRIAR - FORÇAR MENOR */
+            .btn-add {
+                padding: 0.45rem 0.85rem !important;
+                font-size: 0.8rem !important;
+                border-radius: 8px !important;
+                gap: 0.4rem !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+
+            .btn-add i {
+                font-size: 0.85rem !important;
+            }
+
+            /* BOTÕES DE AÇÃO - EDITAR/EXCLUIR - FORÇAR MENOR */
+            .btn-action {
+                padding: 0.4rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 6px !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+
+            .btn-action i {
+                font-size: 0.8rem !important;
+            }
+
+            /* BOTÕES DE ÍCONE - FORÇAR MENOR */
+            .btn-icon {
+                width: 30px !important;
+                height: 30px !important;
+                min-width: 30px !important;
+                padding: 0 !important;
+                border-radius: 6px !important;
+            }
+
+            .btn-icon i {
+                font-size: 0.85rem !important;
+            }
+
+            /* BADGES - FORÇAR MENOR */
+            .badge {
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 4px !important;
+            }
+
+            .produto-status {
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.65rem !important;
+            }
+
+            /* BOTÕES DE MODAL - FORÇAR MENOR */
+            .modal-footer button,
+            .modal-footer .btn,
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+                border-radius: 8px !important;
+                min-height: auto !important;
+                height: auto !important;
+            }
+
+            /* BOTÃO SALVAR/CANCELAR DO MODAL */
+            .btn-primary-custom {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+            }
+
+            .btn-secondary-custom {
+                padding: 0.5rem 1rem !important;
+                font-size: 0.8rem !important;
+            }
+        }
+
+        /* SMARTPHONES - 640px e menores - AINDA MAIS AGRESSIVO */
+        @media (max-width: 640px) {
+            
+            .btn-add {
+                padding: 0.4rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 7px !important;
+                gap: 0.35rem !important;
+            }
+
+            .btn-add i {
+                font-size: 0.8rem !important;
+            }
+
+            .btn-action {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 5px !important;
+            }
+
+            .btn-action i {
+                font-size: 0.75rem !important;
+            }
+
+            .btn-icon {
+                width: 28px !important;
+                height: 28px !important;
+                min-width: 28px !important;
+            }
+
+            .btn-icon i {
+                font-size: 0.8rem !important;
+            }
+
+            .badge {
+                padding: 0.2rem 0.45rem !important;
+                font-size: 0.65rem !important;
+            }
+
+            .produto-status {
+                padding: 0.2rem 0.45rem !important;
+                font-size: 0.6rem !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.45rem 0.85rem !important;
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* SMARTPHONES PEQUENOS - 480px e menores - ULTRA AGRESSIVO */
+        @media (max-width: 480px) {
+            
+            .btn-add {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 6px !important;
+                gap: 0.3rem !important;
+                max-height: 36px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.75rem !important;
+            }
+
+            .btn-action {
+                padding: 0.3rem 0.55rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 5px !important;
+                max-height: 32px !important;
+            }
+
+            .btn-action i {
+                font-size: 0.7rem !important;
+            }
+
+            .btn-icon {
+                width: 26px !important;
+                height: 26px !important;
+                min-width: 26px !important;
+            }
+
+            .btn-icon i {
+                font-size: 0.75rem !important;
+            }
+
+            .badge {
+                padding: 0.18rem 0.4rem !important;
+                font-size: 0.6rem !important;
+            }
+
+            .produto-status {
+                padding: 0.18rem 0.4rem !important;
+                font-size: 0.55rem !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.4rem 0.75rem !important;
+                font-size: 0.7rem !important;
+                max-height: 38px !important;
+            }
+
+            /* BOTÕES DO MODAL - ESPECÍFICO */
+            .modal-footer-custom button {
+                padding: 0.4rem 0.75rem !important;
+                font-size: 0.7rem !important;
+            }
+        }
+
+        /* SMARTPHONES MUITO PEQUENOS - 360px e menores - MÁXIMO COMPACTO */
+        @media (max-width: 360px) {
+            
+            .btn-add {
+                padding: 0.3rem 0.55rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 5px !important;
+                gap: 0.25rem !important;
+                max-height: 32px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.7rem !important;
+            }
+
+            .btn-action {
+                padding: 0.25rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                border-radius: 4px !important;
+                max-height: 28px !important;
+            }
+
+            .btn-action i {
+                font-size: 0.65rem !important;
+            }
+
+            .btn-icon {
+                width: 24px !important;
+                height: 24px !important;
+                min-width: 24px !important;
+            }
+
+            .btn-icon i {
+                font-size: 0.7rem !important;
+            }
+
+            .badge {
+                padding: 0.15rem 0.35rem !important;
+                font-size: 0.55rem !important;
+            }
+
+            .produto-status {
+                padding: 0.15rem 0.35rem !important;
+                font-size: 0.5rem !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.65rem !important;
+                max-height: 34px !important;
+            }
+
+            .modal-footer-custom button {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* FORÇAR TODOS OS BOTÕES GENERICOS EM MOBILE */
+        @media (max-width: 768px) {
+            button:not(.btn-close):not(.navbar-toggler) {
+                max-height: 42px !important;
+            }
+
+            .section-header button {
+                max-width: 100% !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            button:not(.btn-close):not(.navbar-toggler) {
+                max-height: 38px !important;
+                font-size: 0.7rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            button:not(.btn-close):not(.navbar-toggler) {
+                max-height: 34px !important;
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* =========================================================================
+           SISTEMA COMPLETO: BOTÕES PEQUENOS + TEXTOS CURTOS EM MOBILE
+           ========================================================================= */
+        
+        /* ESCONDER TEXTOS E PREPARAR SUBSTITUIÇÃO */
+        .btn-add .btn-text-desktop { display: inline; }
+        .btn-add .btn-text-tablet { display: none; }
+        .btn-add .btn-text-mobile { display: none; }
+        .btn-add .btn-text-tiny { display: none; }
+
+        /* ===== 768px - TABLET - TEXTOS MÉDIOS ===== */
+        @media (max-width: 768px) {
+            
+            /* ESCONDER TEXTO DESKTOP, MOSTRAR VERSÃO CURTA */
+            .btn-add .btn-text-desktop { display: none !important; }
+            .btn-add .btn-text-tablet { display: inline !important; }
+            
+            /* FORÇAR BOTÃO PEQUENO */
+            .btn-add {
+                padding: 0.4rem 0.7rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 7px !important;
+                gap: 0.35rem !important;
+                min-height: auto !important;
+                max-height: 36px !important;
+                height: auto !important;
+                width: auto !important;
+                max-width: 140px !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                line-height: 1.2 !important;
+            }
+
+            .btn-add i {
+                font-size: 0.75rem !important;
+                flex-shrink: 0 !important;
+            }
+
+            /* SECTION HEADER - NÃO DEIXAR BOTÃO CRESCER */
+            .section-header {
+                flex-wrap: wrap !important;
+                gap: 0.75rem !important;
+                align-items: flex-start !important;
+            }
+
+            .section-header .btn-add {
+                flex-grow: 0 !important;
+                flex-shrink: 0 !important;
+                flex-basis: auto !important;
+            }
+
+            /* BOTÕES DE AÇÃO */
+            .btn-action {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.7rem !important;
+                max-height: 32px !important;
+                border-radius: 6px !important;
+            }
+
+            /* BOTÕES DE MODAL */
+            .btn-primary-custom,
+            .btn-secondary-custom,
+            .modal-footer button {
+                padding: 0.45rem 0.8rem !important;
+                font-size: 0.75rem !important;
+                max-height: 38px !important;
+            }
+
+            /* BADGES */
+            .badge,
+            .produto-status {
+                padding: 0.2rem 0.4rem !important;
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* ===== 640px - MOBILE - TEXTOS CURTOS ===== */
+        @media (max-width: 640px) {
+            
+            .btn-add .btn-text-tablet { display: none !important; }
+            .btn-add .btn-text-mobile { display: inline !important; }
+            
+            .btn-add {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 6px !important;
+                gap: 0.3rem !important;
+                max-height: 34px !important;
+                max-width: 120px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.7rem !important;
+            }
+
+            .btn-action {
+                padding: 0.3rem 0.55rem !important;
+                font-size: 0.65rem !important;
+                max-height: 30px !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.4rem 0.7rem !important;
+                font-size: 0.7rem !important;
+                max-height: 36px !important;
+            }
+
+            .badge,
+            .produto-status {
+                padding: 0.18rem 0.35rem !important;
+                font-size: 0.6rem !important;
+            }
+        }
+
+        /* ===== 480px - MOBILE PEQUENO - TEXTOS MUITO CURTOS ===== */
+        @media (max-width: 480px) {
+            
+            .btn-add .btn-text-mobile { display: none !important; }
+            .btn-add .btn-text-tiny { display: inline !important; }
+            
+            .btn-add {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 5px !important;
+                gap: 0.25rem !important;
+                max-height: 32px !important;
+                max-width: 100px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.65rem !important;
+            }
+
+            .btn-action {
+                padding: 0.28rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                max-height: 28px !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.35rem 0.65rem !important;
+                font-size: 0.65rem !important;
+                max-height: 34px !important;
+            }
+
+            .badge,
+            .produto-status {
+                padding: 0.15rem 0.3rem !important;
+                font-size: 0.55rem !important;
+            }
+        }
+
+        /* ===== 360px - MOBILE MUITO PEQUENO - APENAS ÍCONE ===== */
+        @media (max-width: 360px) {
+            
+            .btn-add .btn-text-tiny { display: none !important; }
+            
+            .btn-add {
+                padding: 0.4rem !important;
+                font-size: 0 !important;
+                border-radius: 8px !important;
+                gap: 0 !important;
+                max-height: 36px !important;
+                min-width: 36px !important;
+                max-width: 36px !important;
+                width: 36px !important;
+                justify-content: center !important;
+            }
+
+            .btn-add i {
+                font-size: 0.9rem !important;
+                margin: 0 !important;
+            }
+
+            .btn-action {
+                padding: 0.25rem 0.45rem !important;
+                font-size: 0.55rem !important;
+                max-height: 26px !important;
+            }
+
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                padding: 0.3rem 0.6rem !important;
+                font-size: 0.6rem !important;
+                max-height: 32px !important;
+            }
+
+            .badge,
+            .produto-status {
+                padding: 0.12rem 0.25rem !important;
+                font-size: 0.5rem !important;
+            }
+        }
+
+        /* GARANTIR QUE NENHUM BOTÃO CRESÇA */
+        @media (max-width: 768px) {
+            button {
+                flex-shrink: 0 !important;
+            }
+            
+            .section-header button {
+                width: auto !important;
+            }
+        }
+
+        /* =========================================================================
+           BOTÃO LOGOUT MENOR EM MOBILE
+           ========================================================================= */
+        @media (max-width: 768px) {
+            .btn-logout {
+                padding: 0.6rem !important;
+                font-size: 0.8rem !important;
+                bottom: 1rem !important;
+                border-radius: 8px !important;
+                gap: 0.4rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.9rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .btn-logout {
+                padding: 0.5rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 7px !important;
+                gap: 0.35rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.85rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-logout {
+                padding: 0.45rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 6px !important;
+                gap: 0.3rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.8rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .btn-logout {
+                padding: 0.4rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 6px !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        /* =========================================================================
+           SISTEMA SIMPLIFICADO: TODOS MOSTRAM "NOVO" EM MOBILE
+           ========================================================================= */
+        
+        /* DESKTOP: Mostrar texto completo */
+        .btn-add .btn-text-desktop { display: inline; }
+        .btn-add .btn-text-mobile { display: none; }
+
+        /* MOBILE: Mostrar apenas "Novo" */
+        @media (max-width: 768px) {
+            .btn-add .btn-text-desktop { display: none !important; }
+            .btn-add .btn-text-mobile { display: inline !important; }
+            
+            .btn-add {
+                padding: 0.4rem 0.65rem !important;
+                font-size: 0.75rem !important;
+                border-radius: 7px !important;
+                gap: 0.35rem !important;
+                max-height: 36px !important;
+                max-width: 100px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .btn-add {
+                padding: 0.35rem 0.6rem !important;
+                font-size: 0.7rem !important;
+                max-height: 34px !important;
+                max-width: 90px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-add {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.65rem !important;
+                max-height: 32px !important;
+                max-width: 80px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .btn-add {
+                padding: 0.35rem 0.45rem !important;
+                font-size: 0.6rem !important;
+                max-height: 30px !important;
+                max-width: 75px !important;
+            }
+
+            .btn-add i {
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* =========================================================================
+           FORÇAR BADGES E BOTÃO SAIR SUPER COMPACTOS - ULTRA AGRESSIVO
+           ========================================================================= */
+        
+        /* BADGE STATUS - TAMANHO EXATO DO TEXTO */
+        .produto-status {
+            padding: 0.25rem 0.5rem !important;
+            border-radius: 6px !important;
+            font-size: 0.7rem !important;
+            font-weight: 700 !important;
+            display: inline-block !important;
+            margin-top: 0.5rem !important;
+            width: fit-content !important;
+            max-width: max-content !important;
+            white-space: nowrap !important;
+        }
+
+        /* MOBILE - AINDA MAIS COMPACTO */
+        @media (max-width: 768px) {
+            .produto-status {
+                padding: 0.2rem 0.4rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 5px !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .produto-status {
+                padding: 0.18rem 0.35rem !important;
+                font-size: 0.6rem !important;
+                border-radius: 4px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .produto-status {
+                padding: 0.15rem 0.3rem !important;
+                font-size: 0.55rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .produto-status {
+                padding: 0.12rem 0.25rem !important;
+                font-size: 0.5rem !important;
+            }
+        }
+
+        /* BADGE GENÉRICO - COMPACTO */
+        .badge {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.7rem !important;
+            border-radius: 5px !important;
+            width: fit-content !important;
+            white-space: nowrap !important;
+        }
+
+        @media (max-width: 768px) {
+            .badge {
+                padding: 0.2rem 0.4rem !important;
+                font-size: 0.65rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .badge {
+                padding: 0.18rem 0.35rem !important;
+                font-size: 0.6rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .badge {
+                padding: 0.15rem 0.3rem !important;
+                font-size: 0.55rem !important;
+            }
+        }
+
+        /* BOTÃO LOGOUT - SUPER COMPACTO E FORÇADO */
+        @media (max-width: 992px) {
+            .btn-logout {
+                padding: 0.5rem 0.75rem !important;
+                font-size: 0.75rem !important;
+                bottom: 1rem !important;
+                border-radius: 8px !important;
+                gap: 0.35rem !important;
+                width: auto !important;
+                left: 1rem !important;
+                right: 1rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.85rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .btn-logout {
+                padding: 0.45rem 0.65rem !important;
+                font-size: 0.7rem !important;
+                border-radius: 7px !important;
+                gap: 0.3rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.8rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .btn-logout {
+                padding: 0.4rem 0.6rem !important;
+                font-size: 0.65rem !important;
+                border-radius: 6px !important;
+                gap: 0.25rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.75rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-logout {
+                padding: 0.35rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                border-radius: 6px !important;
+                gap: 0.2rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .btn-logout {
+                padding: 0.3rem 0.45rem !important;
+                font-size: 0.55rem !important;
+                border-radius: 5px !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.65rem !important;
+            }
+        }
+
+        /* =========================================================================
+           FORÇAR BOTÕES FINAIS: EDITAR MENOR, LIXEIRA MAIOR, SAIR ULTRA COMPACTO
+           ========================================================================= */
+        
+
+        /* =========================================================================
+           FORÇAR BOTÕES DO CARD - ULTRA AGRESSIVO - TODAS AS CLASSES
+           ========================================================================= */
+        
+        /* ===== BOTÃO EDITAR - PEQUENO (70px) ===== */
+        .card-home-item button,
+        .card-home-item .btn-editar,
+        .card-home-item .btn-edit,
+        .card-home-item button[onclick*="editar"],
+        .card-home-item button[onclick*="editCard"],
+        button.btn-edit-card,
+        #listaCards button[class*="editar"],
+        #listaCards .btn-editar,
+        .cards-grid button[class*="editar"] {
+            padding: 0.45rem 0.7rem !important;
+            font-size: 0.75rem !important;
+            min-width: 70px !important;
+            max-width: 75px !important;
+            width: 70px !important;
+            border-radius: 6px !important;
+            gap: 0.3rem !important;
+            flex: 0 0 70px !important;
+            flex-shrink: 0 !important;
+            flex-grow: 0 !important;
+        }
+
+        /* ===== BOTÃO EXCLUIR - GRANDE (90px) ===== */
+        .card-home-item .btn-excluir,
+        .card-home-item .btn-deletar,
+        .card-home-item .btn-delete,
+        .card-home-item button[onclick*="excluir"],
+        .card-home-item button[onclick*="deletar"],
+        .card-home-item button[onclick*="deleteCard"],
+        button.btn-delete-card,
+        #listaCards button[class*="excluir"],
+        #listaCards button[class*="deletar"],
+        #listaCards .btn-excluir,
+        #listaCards .btn-deletar,
+        .cards-grid button[class*="excluir"],
+        .cards-grid button[class*="deletar"],
+        .card-home-item button[class*="danger"],
+        .card-home-item button.btn-danger {
+            padding: 0.45rem 0.7rem !important;
+            font-size: 0.75rem !important;
+            min-width: 90px !important;
+            max-width: 95px !important;
+            width: 90px !important;
+            border-radius: 6px !important;
+            gap: 0.35rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex: 0 0 90px !important;
+            flex-shrink: 0 !important;
+            flex-grow: 0 !important;
+        }
+
+        /* ADICIONAR TEXTO "Excluir" */
+        .card-home-item .btn-excluir::after,
+        .card-home-item .btn-deletar::after,
+        .card-home-item button[onclick*="excluir"]::after,
+        .card-home-item button[onclick*="deletar"]::after,
+        .card-home-item button[onclick*="deleteCard"]::after,
+        button.btn-delete-card::after,
+        #listaCards button[class*="excluir"]::after,
+        #listaCards button[class*="deletar"]::after,
+        .card-home-item button[class*="danger"]::after {
+            content: ' Excluir' !important;
+            font-weight: 600 !important;
+            margin-left: 0.2rem !important;
+        }
+
+        /* ÍCONES */
+        .card-home-item button i,
+        .card-home-item .btn-editar i {
+            font-size: 0.8rem !important;
+        }
+
+        .card-home-item .btn-excluir i,
+        .card-home-item .btn-deletar i,
+        .card-home-item button[onclick*="excluir"] i,
+        .card-home-item button[class*="danger"] i {
+            font-size: 0.85rem !important;
+        }
+
+        /* GARANTIR QUE O CONTAINER NÃO QUEBRE */
+        .card-home-item .card-footer,
+        .card-home-item .card-actions,
+        .card-home-footer,
+        #listaCards .card-footer {
+            display: flex !important;
+            gap: 0.5rem !important;
+            justify-content: flex-start !important;
+            align-items: center !important;
+            flex-wrap: nowrap !important;
+        }
+
+        /* FORÇA BOTÕES TEREM TAMANHO FIXO */
+        .cards-grid button {
+            flex-shrink: 0 !important;
+        }
+
+        /* MOBILE - MANTER PROPORÇÕES */
+        @media (max-width: 768px) {
+            .card-home-item button[onclick*="editar"],
+            .card-home-item .btn-editar,
+            #listaCards .btn-editar {
+                padding: 0.4rem 0.6rem !important;
+                font-size: 0.7rem !important;
+                min-width: 65px !important;
+                max-width: 70px !important;
+                width: 65px !important;
+                flex: 0 0 65px !important;
+            }
+
+            .card-home-item button[onclick*="excluir"],
+            .card-home-item .btn-excluir,
+            #listaCards .btn-excluir,
+            .card-home-item button[class*="danger"] {
+                padding: 0.4rem 0.6rem !important;
+                font-size: 0.7rem !important;
+                min-width: 85px !important;
+                max-width: 90px !important;
+                width: 85px !important;
+                flex: 0 0 85px !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .card-home-item button[onclick*="editar"],
+            .card-home-item .btn-editar {
+                padding: 0.35rem 0.55rem !important;
+                font-size: 0.65rem !important;
+                width: 60px !important;
+                flex: 0 0 60px !important;
+            }
+
+            .card-home-item button[onclick*="excluir"],
+            .card-home-item .btn-excluir,
+            .card-home-item button[class*="danger"] {
+                padding: 0.35rem 0.55rem !important;
+                font-size: 0.65rem !important;
+                width: 80px !important;
+                flex: 0 0 80px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card-home-item button[onclick*="editar"],
+            .card-home-item .btn-editar {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                width: 55px !important;
+                flex: 0 0 55px !important;
+            }
+
+            .card-home-item button[onclick*="excluir"],
+            .card-home-item .btn-excluir {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                width: 75px !important;
+                flex: 0 0 75px !important;
+            }
+        }
+   
+        .btn-logout,
+        button.btn-logout,
+        .sidebar button[onclick*="logout"] {
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.7rem !important;
+            bottom: 0.75rem !important;
+            border-radius: 6px !important;
+            gap: 0.25rem !important;
+        }
+
+        .btn-logout i,
+        button.btn-logout i {
+            font-size: 0.75rem !important;
+        }
+
+        @media (max-width: 992px) {
+            .btn-logout {
+                padding: 0.35rem 0.55rem !important;
+                font-size: 0.65rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.7rem !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .btn-logout {
+                padding: 0.3rem 0.5rem !important;
+                font-size: 0.6rem !important;
+                border-radius: 5px !important;
+                gap: 0.2rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.65rem !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .btn-logout {
+                padding: 0.28rem 0.45rem !important;
+                font-size: 0.55rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.6rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .btn-logout {
+                padding: 0.25rem 0.4rem !important;
+                font-size: 0.5rem !important;
+                gap: 0.15rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.55rem !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .btn-logout {
+                padding: 0.22rem 0.35rem !important;
+                font-size: 0.48rem !important;
+            }
+
+            .btn-logout i {
+                font-size: 0.5rem !important;
+            }
+        }
+    </style>
+</head>
+    
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <i class="bi bi-shield-lock-fill"></i>
+            <h3>Tech Center</h3>
+            <p>Painel Administrativo</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="#" class="active" data-section="dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a href="#" data-section="produtos"><i class="bi bi-box-seam"></i> Produtos</a></li>
+            <li><a href="#" data-section="cards"><i class="bi bi-grid-3x3-gap-fill"></i> Cards da Home</a></li>
+            <li><a href="#" data-section="pedidos"><i class="bi bi-receipt"></i> Pedidos</a></li>
+            <li><a href="#" data-section="clientes"><i class="bi bi-people"></i> Clientes</a></li>
+            <li><a href="#" data-section="configuracoes"><i class="bi bi-gear"></i> Configurações</a></li>
+        </ul>
+
+        <button class="btn btn-logout" onclick="window.customConfirm('Sair do Sistema', 'Tem certeza que deseja encerrar sua sessão?', 'warning', 'Sair', window.logoutSistema)">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+        </button>
+    </aside>
+
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="title-container">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <p id="pageSubtitle">Bem-vindo ao painel administrativo</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-details">
+                    <p id="userName">Admin</p>
+                    <small id="userEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5d3c393034331d29383e353e383329382f733e3230">[email&#160;protected]</a></small>
+                </div>
+                <div class="user-avatar">A</div>
+            </div>
+        </div>
+
+        <div class="content-area">
+            <div id="section-dashboard" class="section-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-icon primary">
+                                <i class="bi bi-box-seam"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalProdutos">0</h3>
+                                <p>Total de Produtos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-icon success">
+                                <i class="bi bi-cart-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="emEstoqueCount">0</h3>
+                                <p>Em Estoque</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-icon warning">
+                                <i class="bi bi-people"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalClientesCount">0</h3>
+                                <p>Esgotados</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-card-content">
+                            <div class="stat-icon danger">
+                                <i class="bi bi-currency-dollar"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="faturamentoTotal">R$ 0</h3>
+                                <p>Valor Total</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-graph-up"></i>Visão Geral</h2>
+                    </div>
+                    <div class="empty-state">
+                        <i class="bi bi-graph-up-arrow"></i>
+                        <h3>Estatísticas em Tempo Real</h3>
+                        <p>Acompanhe o desempenho da sua loja em tempo real</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-produtos" class="section-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-box-seam"></i>Gerenciar Produtos</h2>
+                        <button class="btn-add" onclick="window.openModalProduto()">
+                            <i class="bi bi-plus-lg"></i>
+                            <span class="btn-text-desktop">Adicionar Produto</span>
+                            <span class="btn-text-mobile">Novo</span>
+                        </button>
+                    </div>
+
+                    <div class="search-bar">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Buscar produtos..." id="searchInput">
+                    </div>
+
+                    <div id="listaProdutos">
+                        <div class="empty-state">
+                            <i class="bi bi-hourglass-split"></i>
+                            <h3>Carregando Produtos...</h3>
+                            <p>Buscando dados no Supabase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section-cards" class="section-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-grid-3x3-gap-fill"></i>Cards da Home</h2>
+                        <button class="btn-add" onclick="window.openModalCard()">
+                            <i class="bi bi-plus-lg"></i>
+                            <span class="btn-text-desktop">Criar Novo Card</span>
+                            <span class="btn-text-mobile">Novo</span>
+                        </button>
+                    </div>
+                    <div class="cards-grid" id="listaCards">
+                         <div class="empty-state" style="grid-column: 1/-1;">
+                            <i class="bi bi-hourglass-split"></i>
+                            <h3>Carregando Cards...</h3>
+                            <p>Buscando dados no Supabase</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="section-pedidos" class="section-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-receipt"></i>Gerenciar Pedidos</h2>
+                        <button class="btn-add" onclick="window.openModalPedido()">
+                            <i class="bi bi-plus-lg"></i>
+                            <span class="btn-text-desktop">Novo Pedido</span>
+                            <span class="btn-text-mobile">Novo</span>
+                        </button>
+                    </div>
+
+                    <div class="filters">
+                        <button class="filter-btn active" id="filterTodos">Todos</button>
+                        <button class="filter-btn" id="filterProcessando">Processando</button>
+                        <button class="filter-btn" id="filterEmTransito">Em Trânsito</button>
+                        <button class="filter-btn" id="filterEntregue">Entregue</button>
+                        <button class="filter-btn" id="filterCancelado">Cancelado</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Pedido</th>
+                                    <th>Cliente</th>
+                                    <th>Valor</th>
+                                    <th>Status</th>
+                                    <th>Data</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaPedidos">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="section-clientes" class="section-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-people"></i>Gerenciar Clientes</h2>
+                        <button class="btn-add" onclick="window.openModalCliente()">
+                            <i class="bi bi-person-plus"></i>
+                            <span class="btn-text-desktop">Adicionar Cliente</span>
+                            <span class="btn-text-mobile">Novo</span>
+                        </button>
+                    </div>
+
+                    <div class="search-bar">
+                        <i class="bi bi-search"></i>
+                        <input type="text" placeholder="Buscar clientes..." id="searchClientes">
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nome</th>
+                                    <th>Email</th>
+                                    <th>Telefone</th>
+                                    <th>Compras</th>
+                                    <th>Total Gasto</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaClientes">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="section-configuracoes" class="section-content">
+                <div class="section">
+                    <div class="section-header">
+                        <h2><i class="bi bi-gear"></i>Configurações do Sistema</h2>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="section">
+                                <h4><i class="bi bi-shop"></i> Informações da Loja</h4>
+                                <div class="form-group-premium">
+                                    <label class="form-label-premium">Nome da Loja</label>
+                                    <input type="text" class="form-control-premium" value="Tech Center" readonly>
+                                </div>
+                                <div class="form-group-premium">
+                                    <label class="form-label-premium">Email de Contato</label>
+                                    <input type="email" class="form-control-premium" value="contato@techcenter.com" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <div class="section">
+                                <h4><i class="bi bi-bell"></i> Notificações</h4>
+                                <div class="form-group-premium">
+                                    <label class="form-label-premium">
+                                        <input type="checkbox" checked> Novos Pedidos
+                                    </label>
+                                </div>
+                                <div class="form-group-premium">
+                                    <label class="form-label-premium">
+                                        <input type="checkbox" checked> Estoque Baixo
+                                    </label>
+                                </div>
+                                <div class="form-group-premium">
+                                    <label class="form-label-premium">
+                                        <input type="checkbox"> Novos Clientes
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-produto" id="modalProduto">
+        <div class="modal-content-custom">
+            <div class="modal-header-custom">
+                <h2 id="modal-title"><i class="bi bi-plus-circle-fill"></i> Adicionar Novo Produto</h2>
+                <p>Preencha os campos abaixo para cadastrar um novo produto na loja</p>
+            </div>
+
+            <div class="modal-body-custom">
+                <form id="formProduto">
+                    <input type="hidden" id="produtoId">
+
+                    <div class="section-divider">
+                        <i class="bi bi-info-circle-fill"></i>
+                        <h3>Informações Básicas</h3>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-tag-fill"></i>
+                                    Nome do Produto <span class="required">*</span>
+                                </label>
+                                <input type="text" class="form-control-premium" id="nome" placeholder="Ex: iPhone 15 Pro Max 256GB" required>
+                                <span class="form-help-text">Use um nome descritivo e completo</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-award-fill"></i>
+                                    Marca <span class="required">*</span>
+                                </label>
+                                <input type="text" class="form-control-premium" id="marca" placeholder="Ex: Apple" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group-premium">
+                        <label class="form-label-premium">
+                            <i class="bi bi-file-text-fill"></i>
+                            Descrição Detalhada
+                        </label>
+                        <textarea class="form-control-premium" id="descricao" rows="5" placeholder="Digite aqui todos os detalhes técnicos, especificações e benefícios do produto..."></textarea>
+                        <span class="form-help-text">Este conteúdo aparecerá na página de detalhes do produto.</span>
+                    </div>
+
+                    <div class="section-divider">
+                        <i class="bi bi-cash-stack"></i>
+                        <h3>Preços e Estoque</h3>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-currency-dollar"></i>
+                                    Preço Atual <span class="required">*</span>
+                                </label>
+                                <div class="input-group-premium">
+                                    <span class="input-group-text-premium">R$</span>
+                                    <input type="number" class="form-control-premium" id="preco_novo" placeholder="0,00" step="0.01" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-tag"></i>
+                                    Preço Antigo
+                                </label>
+                                <div class="input-group-premium">
+                                    <span class="input-group-text-premium">R$</span>
+                                    <input type="number" class="form-control-premium" id="preco_antigo" placeholder="0,00" step="0.01">
+                                </div>
+                                <span class="form-help-text">Deixe vazio se não houver desconto</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-box-seam"></i>
+                                    Quantidade <span class="required">*</span>
+                                </label>
+                                <input type="number" class="form-control-premium" id="quantidade_estoque" placeholder="0" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-divider">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                        <h3>Categorização</h3>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-folder-fill"></i>
+                                    Categoria <span class="required">*</span>
+                                </label>
+                                <select class="form-control-premium" id="categoria" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="celular">📱 Celular</option>
+                                    <option value="audio">🎧 Áudio</option>
+                                    <option value="acessorio">🔌 Acessório</option>
+                                    <option value="game">🎮 Gaming</option>
+                                    <option value="smarthome">🏠 Smart Home</option>
+                                    <option value="informatica">💻 Informática</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-bookmark-star-fill"></i>
+                                    Seção
+                                </label>
+                                <select class="form-control-premium" id="secao">
+                                    <option value="todos">Todos</option>
+                                    <option value="destaque">⭐ Destaque</option>
+                                    <option value="ofertas">🔥 Ofertas</option>
+                                    <option value="lancamentos">🆕 Lançamentos</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-patch-check-fill"></i>
+                                    Badge
+                                </label>
+                                <select class="form-control-premium" id="badge">
+                                    <option value="">Sem Badge</option>
+                                    <option value="Novo">🆕 Novo</option>
+                                    <option value="Oferta">🔥 Oferta</option>
+                                    <option value="Hot">⚡ Hot</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-grid-fill"></i>
+                                    Coleção Destaque (Card)
+                                </label>
+                                <select class="form-control-premium" id="card-id">
+                                    <option value="">Nenhum Destaque</option>
+                                </select>
+                                <span class="form-help-text">Selecione um Card para este produto aparecer na seção "Os Mais Desejados".</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-divider">
+                        <i class="bi bi-image-fill"></i>
+                        <h3>Imagem do Produto</h3>
+                    </div>
+
+                    <div class="form-group-premium">
+                        <label class="form-label-premium">
+                            <i class="bi bi-cloud-upload-fill"></i>
+                            Upload de Imagem
+                        </label>
+                        <div class="file-upload-area" onclick="document.getElementById('imagemFile').click()">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 3rem; color: var(--gray-600); pointer-events: none;"></i>
+                            <div style="font-weight: 600; margin: 1rem 0; pointer-events: none;">Clique para selecionar a imagem</div>
+                            <div style="font-size: 0.8125rem; color: var(--gray-600); pointer-events: none;">PNG, JPG ou WebP (máx. 5MB)</div>
+                            <div id="imagePreviewDiv" style="margin-top: 1rem; pointer-events: none;"></div>
+                        </div>
+                        <input type="file" id="imagemFile" accept="image/*" style="display: none;" onchange="window.previewImage(event)">
+                    </div>
+
+                    <div class="divider-or">
+                        <span>OU</span>
+                    </div>
+
+                    <div class="form-group-premium">
+                        <label class="form-label-premium">
+                            <i class="bi bi-link-45deg"></i>
+                            URL da Imagem
+                        </label>
+                        <input type="url" class="form-control-premium" id="img" placeholder="https://exemplo.com/imagem.jpg">
+                        <span class="form-help-text">Cole o link de uma imagem externa</span>
+                    </div>
+
+                    <div class="section-divider">
+                        <i class="bi bi-star-fill"></i>
+                        <h3>Detalhes Adicionais</h3>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-star-half"></i>
+                                    Avaliação (0-5)
+                                </label>
+                                <input type="number" class="form-control-premium" id="reviews" min="0" max="5" step="0.1" value="4.5" placeholder="4.5">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium">
+                                    <i class="bi bi-link"></i>
+                                    Link da Página
+                                </label>
+                                <input type="text" class="form-control-premium" id="link" placeholder="produto-iphone15.html">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-secondary-custom" onclick="window.closeModalProduto()">
+                    <i class="bi bi-x-lg"></i> Cancelar
+                </button>
+                <button type="button" class="btn-primary-custom" onclick="window.salvarProduto()">
+                    <i class="bi bi-check-lg"></i> Salvar Produto
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="modal-produto" id="modalCard">
+        <div class="modal-content-custom" style="max-width: 600px;">
+            <div class="modal-header-custom">
+                <h2 id="modalCardTitle"><i class="bi bi-grid-3x3-gap-fill"></i> Criar Nova Coleção Destaque</h2>
+                <p>Crie um Card para organizar os produtos que aparecerão na Home.</p>
+            </div>
+            <div class="modal-body-custom">
+                <form id="formCard">
+                    <input type="hidden" id="cardId">
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-card-heading"></i> Título da Coleção <span class="required">*</span></label>
+                        <input type="text" class="form-control-premium" id="cardTitulo" placeholder="Ex: Ofertas de Fim de Ano" required>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-chat-left-text-fill"></i> Subtítulo (Opcional)</label>
+                        <input type="text" class="form-control-premium" id="cardSubtitulo" placeholder="Descrição rápida">
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-image-fill"></i> Imagem de Fundo <span class="required">*</span></label>
+                        <div class="file-upload-area" onclick="document.getElementById('cardImagemFile').click()">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 3rem; color: var(--gray-600); pointer-events: none;"></i>
+                            <div style="font-weight: 600; margin: 1rem 0; pointer-events: none;">Clique para selecionar a imagem</div>
+                            <div style="font-size: 0.8125rem; color: var(--gray-600); pointer-events: none;">PNG, JPG ou WebP (ideal: 800x800px QUADRADO)</div>
+                            <div id="cardImagePreviewDiv" style="margin-top: 1rem; pointer-events: none;"></div>
+                        </div>
+                        <input type="file" id="cardImagemFile" accept="image/*" style="display: none;" onchange="window.previewCardImage(event)">
+                    </div>
+                    <div class="divider-or"><span>OU</span></div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-link-45deg"></i> URL da Imagem</label>
+                        <input type="url" class="form-control-premium" id="cardImg" placeholder="https://images.unsplash.com/...">
+                        <span class="form-help-text">Cole o link de uma imagem externa</span>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-arrow-right-circle-fill"></i> Link de Destino <span class="required">*</span></label>
+                        <input type="text" class="form-control-premium" id="cardLink" placeholder="Ex: categoria.html?cat=iphone" required>
+                        <span class="form-help-text">Para onde o card redireciona quando clicado</span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium"><i class="bi bi-sort-numeric-up"></i> Ordem <span class="required">*</span></label>
+                                <input type="number" class="form-control-premium" id="cardOrdem" value="1" min="1" required>
+                                <span class="form-help-text">Menor = primeiro</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group-premium">
+                                <label class="form-label-premium"><i class="bi bi-patch-question-fill"></i> Ícone</label>
+                                <select class="form-control-premium" id="cardIcone">
+                                    <option value="">Nenhum Ícone</option>
+                                    <option value="bi-fire">🔥 Fogo</option>
+                                    <option value="bi-star-fill">⭐ Estrela</option>
+                                    <option value="bi-lightning-fill">⚡ Raio</option>
+                                    <option value="bi-box-seam">📦 Produto</option>
+                                    <option value="bi-gift-fill">🎁 Presente</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-secondary-custom" onclick="window.closeModalCard()">Cancelar</button>
+                <button type="button" class="btn-primary-custom" onclick="window.salvarCardForm()"><i class="bi bi-check-lg"></i> Salvar Card</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-produto" id="modalPedido">
+        <div class="modal-content-custom" style="max-width: 600px;">
+            <div class="modal-header-custom">
+                <h2 id="modalPedidoTitle"><i class="bi bi-receipt"></i> Gerenciar Pedido</h2>
+            </div>
+            <div class="modal-body-custom">
+                <form id="formPedido">
+                    <input type="hidden" id="pedId">
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-person-fill"></i> Nome do Cliente</label>
+                        <input type="text" class="form-control-premium" id="pedClienteNome" required>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-currency-dollar"></i> Valor Total (R$)</label>
+                        <input type="number" step="0.01" class="form-control-premium" id="pedValor" required>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-truck-fill"></i> Status</label>
+                        <select class="form-control-premium" id="pedStatus">
+                            <option value="Processando">Processando</option>
+                            <option value="Em Trânsito">Em Trânsito</option>
+                            <option value="Entregue">Entregue</option>
+                            <option value="Cancelado">Cancelado</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-secondary-custom" onclick="window.closeModalPedido()">Cancelar</button>
+                <button type="button" class="btn-primary-custom" onclick="window.salvarPedidoForm()">Salvar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-produto" id="modalCliente">
+        <div class="modal-content-custom" style="max-width: 500px;">
+            <div class="modal-header-custom">
+                <h2 id="modalClienteTitle"><i class="bi bi-people-fill"></i> Gerenciar Cliente</h2>
+            </div>
+            <div class="modal-body-custom">
+                <form id="formCliente">
+                    <input type="hidden" id="cliId">
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-person-badge-fill"></i> Nome Completo</label>
+                        <input type="text" class="form-control-premium" id="cliNome" placeholder="Nome Completo" required>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-envelope-fill"></i> Email</label>
+                        <input type="email" class="form-control-premium" id="cliEmail" placeholder="email@exemplo.com" required>
+                    </div>
+                    <div class="form-group-premium">
+                        <label class="form-label-premium"><i class="bi bi-telephone-fill"></i> Telefone</label>
+                        <input type="text" class="form-control-premium" id="cliTelefone" placeholder="(XX) XXXXX-XXXX">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-custom">
+                <button type="button" class="btn-secondary-custom" onclick="window.closeModalCliente()">Cancelar</button>
+                <button type="button" class="btn-primary-custom" onclick="window.salvarClienteForm()">Salvar Cliente</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade modal-confirm-custom" id="customConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="confirmIcon" class="confirm-icon-wrapper">
+                        <i id="confirmIconClass"></i>
+                    </div>
+                    <h5 id="confirmTitle"></h5>
+                    <p id="confirmMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-confirm-cancel" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn-confirm-action" id="confirmActionBtn"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer">
+        </div>
+    <script>
+        // Função do Preview de Imagem de Card (mantida)
+        window.previewCardImage = function(event) {
+            const file = event.target.files[0];
+            const previewDiv = document.getElementById('cardImagePreviewDiv');
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewDiv.innerHTML = '<div style="max-width: 200px; margin: 0 auto;"><img src="' + e.target.result + '" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" alt="Preview"><p style="margin-top: 0.5rem; font-size: 0.875rem; color: var(--success); font-weight: 600;">✓ Imagem selecionada</p></div>';
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Função para alternar o menu hambúrguer em mobile (mantida)
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const menuToggle = document.getElementById('menuToggle');
+            
+            if (menuToggle && sidebar) {
+                menuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('show');
+                });
+                
+                document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                    link.addEventListener('click', () => {
+                        // Fecha o menu ao clicar em um link, se estiver em tela pequena
+                        if (window.innerWidth <= 992) {
+                            sidebar.classList.remove('show');
+                        }
+                    });
+                });
+            }
+        });
+        
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/admin.js"></script>
+</body>
+</html>
