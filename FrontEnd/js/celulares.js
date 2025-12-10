@@ -1,4 +1,4 @@
-// celulares.js - VERSÃO CORRIGIDA PARA MOBILE
+// celulares.js - VERSÃO CORRIGIDA (Funciona em celulares.html e categoria.html)
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 // ====== SUPABASE CONFIG ======
@@ -11,6 +11,7 @@ console.log('✅ Supabase inicializado')
 // ====== CONSTANTES ======
 const WHATSAPP_NUMBER = "5561996684007"
 let carrinho = []
+let todosProdutos = []
 
 // ====== FUNÇÕES DE CARRINHO ======
 window.loadCart = function() {
@@ -163,7 +164,7 @@ function renderProducts(productsToShow) {
     }
     
     if (productsToShow.length === 0) {
-        countText.innerHTML = '0 encontrados'
+        if(countText) countText.innerHTML = '0 encontrados'
         container.innerHTML = `
             <div class="col-12 text-center py-5">
                 <i class="bi bi-search text-muted" style="font-size: 4rem; opacity: 0.2;"></i>
@@ -172,47 +173,44 @@ function renderProducts(productsToShow) {
         return
     }
 
-    countText.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2"></i> ${productsToShow.length} produtos encontrados`
+    if(countText) countText.innerHTML = `<i class="bi bi-check-circle-fill text-success me-2"></i> ${productsToShow.length} produtos encontrados`
 
     container.innerHTML = productsToShow.map(p => {
         const nomeSafe = p.nome.replace(/'/g, "\\'").replace(/"/g, '&quot;')
-        const imgSafe = p.img && p.img.length > 10 ? p.img : 'https://placehold.co/400x400/EEE/999?text=Sem+Foto'
+        const imgSafe = p.img || 'https://placehold.co/400x400/EEE/999?text=Sem+Foto'
         const detailsLink = `produto.html?id=${p.id}`
         
         let badgeHtml = ''
         if (p.badge) {
             let badgeClass = 'badge-novo'
-            if (p.badge.toLowerCase().includes('oferta') || p.badge.toLowerCase().includes('promoção')) {
-                badgeClass = 'badge-oferta'
-            } else if (p.badge.toLowerCase().includes('hot') || p.badge.toLowerCase().includes('destaque')) {
-                badgeClass = 'badge-hot'
-            }
+            if (p.badge.toLowerCase().includes('oferta')) badgeClass = 'badge-oferta'
+            else if (p.badge.toLowerCase().includes('hot')) badgeClass = 'badge-hot'
             badgeHtml = `<span class="product-badge ${badgeClass}">${p.badge}</span>`
         }
         
         const isEsgotado = p.esgotado || p.quantidade_estoque <= 0
         const btnHtml = isEsgotado
-            ? `<button class="btn-bag" disabled><i class="bi bi-x-lg"></i></button>`
+            ? `<button class="btn-bag bg-secondary" disabled><i class="bi bi-x-lg"></i></button>`
             : `<button class="btn-bag" onclick="event.stopPropagation(); window.addToCart('${nomeSafe}', ${p.preco_novo}, '${imgSafe}'); return false;">
                    <i class="bi bi-bag-plus-fill"></i>
                </button>`
 
         const oldPriceHtml = p.preco_antigo > 0 
             ? `<div class="price-old">De R$ ${p.preco_antigo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>` 
-            : ''
+            : '<div class="price-old">&nbsp;</div>'
 
         return `
-        <div class="col-6 col-md-4 col-lg-3"> 
+        <div class="col-12 col-md-6 col-lg-4"> 
             <a href="${detailsLink}" class="text-decoration-none">
                 <div class="product-card">
                     ${badgeHtml}
                     <div class="product-img-wrapper">
                         <img src="${imgSafe}" alt="${nomeSafe}" loading="lazy" onerror="this.src='https://placehold.co/400x400?text=Erro'">
                     </div>
-                    <div class="product-info">
+                    <div class="product-info d-flex flex-column h-100">
                         <div class="product-brand">${p.marca || 'TECH'}</div>
                         <h5 class="product-name">${p.nome}</h5>
-                        <div class="price-section">
+                        <div class="price-section mt-auto">
                             ${oldPriceHtml}
                             <div class="price-container">
                                 <div class="price-current">R$ ${p.preco_novo.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div>
@@ -232,11 +230,35 @@ async function loadProducts() {
     try {
         console.log('🔄 Buscando produtos do Supabase...')
         
-        const { data, error } = await supabase
+        // Verificar se está na página de categoria
+        const urlParams = new URLSearchParams(window.location.search)
+        const cardId = urlParams.get('card')
+        
+        let query = supabase
             .from('produtos')
             .select('*')
             .order('id', { ascending: false })
         
+        // Filtrar por card_id se estiver na página categoria.html
+        if (cardId) {
+            console.log('🔍 Filtrando por card_id:', cardId)
+            query = query.eq('card_id', cardId)
+            
+            // Buscar informações do card para o título
+            const { data: cardData } = await supabase
+                .from('cards')
+                .select('titulo, subtitulo')
+                .eq('id', cardId)
+                .single()
+            
+            if (cardData) {
+                document.getElementById('category-title').textContent = cardData.titulo
+                document.getElementById('category-description').textContent = cardData.subtitulo || 'Produtos selecionados'
+            }
+        }
+        
+        const { data, error } = await query
+
         if (error) {
             console.error('❌ Erro Supabase:', error)
             throw error
@@ -244,12 +266,8 @@ async function loadProducts() {
 
         console.log('✅ Produtos carregados:', data?.length || 0)
         
-        if (!data || data.length === 0) {
-            renderProducts([])
-            return
-        }
-
-        renderProducts(data)
+        todosProdutos = data || []
+        renderProducts(todosProdutos)
         
     } catch (error) {
         console.error('❌ ERRO FATAL:', error.message)
@@ -269,26 +287,13 @@ async function loadProducts() {
 function setupProductSearch() {
     const searchInput = document.getElementById('searchInput')
     if (searchInput) {
-        searchInput.addEventListener('input', async (e) => {
+        searchInput.addEventListener('input', (e) => {
             const search = e.target.value.toLowerCase()
-            if (!search) {
-                await loadProducts()
-                return
-            }
-            
-            try {
-                const { data } = await supabase
-                    .from('produtos')
-                    .select('*')
-                
-                const filtered = data.filter(p => 
-                    p.nome.toLowerCase().includes(search) ||
-                    p.marca.toLowerCase().includes(search)
-                )
-                renderProducts(filtered)
-            } catch (e) {
-                console.error('❌ Erro na busca:', e)
-            }
+            const filtered = todosProdutos.filter(p => 
+                p.nome.toLowerCase().includes(search) ||
+                p.marca.toLowerCase().includes(search)
+            )
+            renderProducts(filtered)
         })
     }
 }
